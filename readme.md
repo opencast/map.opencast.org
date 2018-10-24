@@ -29,6 +29,10 @@ CREATE TABLE user (
 );
 ```
 
+The file `user.db` contains a test SQLite database with a few test users around
+the world.
+
+
 Example Map
 -----------
 
