@@ -1,7 +1,7 @@
 #!/bin/bash
 
 git checkout master
-python generate-maps py
+python generate-map py
 
 mkdir ~/tmp
 mkdir ~/tmp/geomap
