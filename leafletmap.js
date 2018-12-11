@@ -1,4 +1,5 @@
 window.onload = function () {
+    console.log("Script is running")
     var basemap = L.tileLayer('https://a.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 		attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
 	});
