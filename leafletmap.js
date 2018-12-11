@@ -20,7 +20,7 @@ var opcIcon = L.icon({
     });
 
 
-    var map = L.map('index')
+    var map = L.map('my-map')
     .fitBounds(geojson.getBounds());
 
 
