@@ -1,3 +1,7 @@
-DS_Store
+# ingore OS artifacts
+.DS_Store
+
+# Ignore all temporary editor files
 *.swp
-*.dwo
+*.iml
+.idea
