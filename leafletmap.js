@@ -1,16 +1,9 @@
 window.onload = function () {
     console.log("Script is running")
     var basemap = L.tileLayer('https://a.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-		attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
+		attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors',
+        noWrap: true
 	});
-
-var opcIcon = L.icon({
-    iconUrl: 'opc.png',
-
-    iconSize:     [30, 30],
-    iconAnchor:   [22, 94],
-    popupAnchor:  [-3, -76]
-});
 
     $.getJSON("census.geojson", function(data) {
 
@@ -20,13 +13,12 @@ var opcIcon = L.icon({
       }
     });
 
-
     var map = L.map('my-map')
     .fitBounds(geojson.getBounds());
 
-
     basemap.addTo(map);
     geojson.addTo(map);
+$(window).on("resize", function () {
+     $("#my-map").height($(window).height()); map.invalidateSize(); }).trigger("resize");
     });
-
 };

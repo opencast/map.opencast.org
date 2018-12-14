@@ -29,8 +29,41 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          19.6875,
-          52.696361078274485
+          145.546875,
+          -35.7465122599185
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          22.8515625,
+          -31.653381399663985
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.0703125,
+          47.754097979680026
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -95.2734375,
+          41.244772343082076
         ]
       }
     }
