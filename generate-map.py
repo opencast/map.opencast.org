@@ -36,7 +36,7 @@ def convertGeoJson(geoAdressList):
             geoJson["features"].append(feature)
         return geoJson
 
-conn = sqlite3.connect('user.db')
+conn = sqlite3.connect('~/tmp/user.db')
 cur = conn.cursor()
 geopy.geocoders.options.default_user_agent = "opc-map"
 
