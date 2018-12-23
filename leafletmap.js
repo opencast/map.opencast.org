@@ -5,13 +5,15 @@ window.onload = function () {
         noWrap: false
 	});
 
-    $.getJSON("census.geojson", function(data) {
+    $.getJSON("adopters.geojson", function(data) {
 
-    var geojson = L.geoJson(data, {
-      onEachFeature: function (feature, layer) {
-        layer.bindPopup(feature.properties.Area_Name);
+      function onEachFeature(feature, layer) {
+
+          layer.bindPopup("Institution: " + feature.properties.institution);
       }
-    });
+      var geojson = L.geoJson(data, {
+        onEachFeature: onEachFeature
+      });
 
     var map = L.map('my-map',{
       minZoom: 2
