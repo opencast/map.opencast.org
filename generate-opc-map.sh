@@ -1,7 +1,7 @@
 #!/bin/bash
 
 git checkout master
-python generate-map py
+python generate-map.py
 
 mkdir ~/tmp
 mkdir ~/tmp/geomap
@@ -11,9 +11,9 @@ cp leafletmap.js ~/tmp/geomap
 
 git checkout gh-pages
 
-cp map.opencast.org/mymap.html .
-cp map.opencast.org/census.geojson .
-cp map.opencast.org/leafletmap.js .
+cp ~/tmp/geomap/mymap.html .
+cp ~/tmp/geomap/census.geojson .
+cp ~/tmp/geomap/leafletmap.js .
 
 git add .
 git commit -m "testing bash script"

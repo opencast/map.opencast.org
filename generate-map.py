@@ -1,51 +1,49 @@
+
 import sqlite3
+import json
 import geopy
 import sys
 from geopy.geocoders import Nominatim
-geopy.geocoders.options.default_user_agent = "opc-map"
+from time import sleep
 
-conn = sqlite3.connect('user.db')
-cur = conn.cursor()
-
-def get_latitude(x):
-    if x is not None:
-        return x.latitude
-    else: print("ISNONE")
-
-def get_longitude(x):
-  return x.longitude
-
-#get Location as geocode from the db, saved into a list
-def getLocation():
+def getUserInformation():
     geolocator = Nominatim(timeout = 10)
-    geoAdresses = []
-    cur.execute("Select distinct country, city FROM user")
-    userLocation = cur.fetchone()
-    while userLocation is not None:
-        userLocation = cur.fetchone()
-        #print(userLocation)
-        if userLocation is not None:
-            userLocationString = ','.join(userLocation)
-            geolocate_column = geolocator.geocode(userLocationString, addressdetails=True)
-            if geolocate_column is not None:
-                latitude = get_latitude(geolocate_column)
-                longitude = get_longitude(geolocate_column)
-                geoAdress = [longitude, latitude]
-                #print(geoAdress)
-                geoAdresses.append(geoAdress)
-    return geoAdresses
+
+    cur.execute("Select distinct country, city, organization FROM user")
+
+    allUsersDict = json.loads(json.dumps(cur.fetchall()))
+    allUsersGeoCode = []
+    k = 0
+    for i in range(len(allUsersDict)):
+        geolocate_column = geolocator.geocode(allUsersDict[i][0]+ " " + allUsersDict[i][1], addressdetails=True)
+        sleep(0.075)
+        k = k + 1
+        print(k)
+        latitude = geolocate_column.latitude if geolocate_column is not None else None
+        longitude = geolocate_column.longitude if geolocate_column is not None else None
+        if latitude or longitude is not None:
+            allUsersGeoCode.append([latitude, longitude, allUsersDict[i][2]])
+
+    #print(allUsersGeoCode)
+    return allUsersGeoCode
 
 def convertGeoJson(geoAdressList):
         geoJson = {"type": "FeatureCollection","features": []}
         for i in range(len(geoAdressList)):
             feature = {"type": "Feature", "properties": {}, "geometry": {"type": "Point", "coordinates": []}}
-            feature["geometry"]["coordinates"] = [geoAdressList[i][0],geoAdressList[i][1]]
+            feature["geometry"]["coordinates"] = [geoAdressList[i][1],geoAdressList[i][0]]
+            feature['properties'] = {'institution' : geoAdressList[i][2]}
             geoJson["features"].append(feature)
         return geoJson
+
+conn = sqlite3.connect('user.db')
+cur = conn.cursor()
+geopy.geocoders.options.default_user_agent = "opc-map"
 
 open("census.geojson","w").close()
 
 with open("census.geojson", "a") as census:
-   census.write(str(convertGeoJson(getLocation())).replace("'",'"'))
+   #census.write(str(convertGeoJson(getUserInformation())).replace("'",'"'))
+   census.write(json.dumps(convertGeoJson(getUserInformation())))
 
 sys.exit()
