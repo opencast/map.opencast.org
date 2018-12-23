@@ -40,9 +40,9 @@ conn = sqlite3.connect('/Users/danielkaiser/tmp/user.db')
 cur = conn.cursor()
 geopy.geocoders.options.default_user_agent = "opc-map"
 
-open("census.geojson","w").close()
+open("adopters.geojson","w").close()
 
-with open("census.geojson", "a") as census:
+with open("adopters.geojson", "a") as census:
    #census.write(str(convertGeoJson(getUserInformation())).replace("'",'"'))
    census.write(json.dumps(convertGeoJson(getUserInformation())))
 
