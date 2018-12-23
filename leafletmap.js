@@ -5,7 +5,7 @@ window.onload = function () {
         noWrap: false
 	});
 
-    $.getJSON("census.geojson", function(data) {
+    $.getJSON("adopters.geojson", function(data) {
 
       function onEachFeature(feature, layer) {
 

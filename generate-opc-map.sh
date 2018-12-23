@@ -5,14 +5,14 @@ python generate-map.py
 
 mkdir ~/tmp
 mkdir ~/tmp/geomap
-cp mymap.html ~/tmp/geomap
-cp census.geojson ~/tmp/geomap
+cp index.html ~/tmp/geomap
+cp adopters.geojson ~/tmp/geomap
 cp leafletmap.js ~/tmp/geomap
 
 git checkout gh-pages
 
-cp ~/tmp/geomap/mymap.html .
-cp ~/tmp/geomap/census.geojson .
+cp ~/tmp/geomap/index.html .
+cp ~/tmp/geomap/adopters.geojson .
 cp ~/tmp/geomap/leafletmap.js .
 
 git add .
