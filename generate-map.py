@@ -12,7 +12,9 @@ def getUserInformation():
     cur.execute('select distinct country, city, organization from user')
     for country, city, organization in cur.fetchall():
         location = geolocator.geocode({'country': country, 'city': city},
-                                      addressdetails=True)
+                                      addressdetails=True) \
+                   or geolocator.geocode('%s, %s' % (country, city),
+                                         addressdetails=True)
         print((country, city), '->', location)
         if location:
             yield (location.latitude, location.longitude, organization)
