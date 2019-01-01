@@ -30,7 +30,7 @@ def convertGeoJson(addresses):
             },
             "geometry": {
                 "type": "Point",
-                "coordinates": [lat, lon]
+                "coordinates": [lon, lat]
             }})
     return {"type": "FeatureCollection", "features": features}
 
