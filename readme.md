@@ -1,6 +1,9 @@
 Generate Map of Opencast Adopters
 =================================
 
+[![Build Status](https://travis-ci.com/opencast/map.opencast.org.svg?branch=master)
+](https://travis-ci.com/opencast/map.opencast.org)
+
 *This is still work in progress*
 
 This tool is meant to automatically generate a map of Opencast adopters based
