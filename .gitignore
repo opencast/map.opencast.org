@@ -5,3 +5,6 @@
 *.swp
 *.iml
 .idea
+
+# Ignore output
+adopters.geojson
