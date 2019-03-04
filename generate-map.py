@@ -3,85 +3,96 @@
 import sqlite3
 import json
 from geopy.geocoders import Nominatim
-import os
+
+
+# global geolocator for initializing only ones
+def set_globalGeolocator():
+
+    global geolocator
+    geolocator = Nominatim(timeout=10, user_agent='Opencast map generator')
+
+
+# load the file only ones
+def load_datafile():
+
+    global data
+
+    try:
+        with open("cache.json", "r") as data_file:
+            data = data_file.read()
+            data = json.loads(data)
+    except Exception:
+        with open("cache.json", "w+") as data_file:
+            # Because of the empty file python converts data to a String, so
+            # in line 46 append is not working.
+            #  --> In Exception ,,data = []'' to prevent this problem.
+            print("FILE IS EMPTY")
+            data = []
 
 
 def getUserInformation():
-
-    locations = []
 
     cur = sqlite3.connect('user.db').cursor()
     cur.execute('select distinct country, city, organization from user')
     for country, city, organization in cur.fetchall():
         if organization != "None":
-            locations.append(compareCache(country, city, organization))
-    return locations
+            yield compareCache(country, city, organization)
 
 
 def getGeoCode(country, city, organization, dataList):
 
-    geolocator = Nominatim(timeout=10, user_agent='Opencast map generator')
-    newLocation = geolocator.geocode(country, city, addressdetails=True) \
-        or geolocator.geocode('%s, %s' % (country, city), addressdetails=True)
+    # Location with geocode true ->
+    # add it to the cache and return geoLocation object
+    newLocation = geolocator.geocode('%s, %s' %
+                                     (country, city), addressdetails=True)
     if newLocation:
-        os.remove("cache.json")
-        f = open("cache.json", "a")
         geoLocation = {"country": country, "city": city,
                        "organization": organization,
                        "latitude": newLocation.latitude,
                        "longitude": newLocation.longitude}
         dataList.append(geoLocation)
-        f.write(json.dumps(dataList))
-
-        geoLocation = {"country": country,
-                       "city": city, "organization": organization,
-                       "latitude": newLocation.latitude,
-                       "longitude": newLocation.longitude}
+        with open("cache.json", "w") as f:
+            f.write(json.dumps(dataList))
         return geoLocation
 
 
 def convertGeoJson(addresses):
 
     features = []
-    for i in addresses:
-        if i is not None:
-            print(i)
+    for address in addresses:
+        if address is not None:
+            # print(address)
             features.append({
                 "type": "Feature",
                 "properties": {
-                    'institution': i["organization"]
+                    'institution': address["organization"]
                 },
                 "geometry": {
                     "type": "Point",
-                    "coordinates": [i["longitude"], i["latitude"]]
+                    "coordinates": [address["longitude"], address["latitude"]]
                 }})
     return {"type": "FeatureCollection", "features": features}
 
 
 def compareCache(country, city, organization):
 
-    check = 0
-    with open('cache.json') as data_file:
-        if os.stat("cache.json").st_size == 0:
-            data = []
-
-            return getGeoCode(country, city, organization, data)
+    try:
+        for item in data:
+            if (city == item["city"] and country == item['country']
+                    and organization == item['organization']):
+                print("USER LOADED FROM CACHE")
+                return item
         else:
-            data = json.load(data_file)
-            for item in data:
-                if (city == item["city"] and country == item['country']
-                        and organization == item['organization']):
-                    check = 1
-                    if check == 1:
-
-                        return item
-            else:
-
-                return getGeoCode(country, city, organization, data)
-            check = 0
+            print("NEW USER NOT IN CACHE")
+            return getGeoCode(country, city, organization, data)
+    except Exception:
+        print("FAILED ERROR --> Empty, Not Existing File etc.")
+        return getGeoCode(country, city, organization, data)
 
 
 def main():
+    set_globalGeolocator()
+    load_datafile()
     with open("adopters.geojson", "w") as census:
         census.write(json.dumps(convertGeoJson(getUserInformation())))
 

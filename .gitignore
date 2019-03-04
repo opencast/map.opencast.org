@@ -1,5 +1,6 @@
 # ingore OS artifacts
 .DS_Store
+_vscode
 
 # Ignore all temporary editor files
 *.swp
@@ -9,3 +10,6 @@
 
 # Ignore output
 adopters.geojson
+cache.json
+user.db
+node_modules
