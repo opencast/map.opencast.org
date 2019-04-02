@@ -5,11 +5,8 @@ import json
 from geopy.geocoders import Nominatim
 
 
-# global geolocator for initializing only ones
-def set_globalGeolocator():
-
-    global geolocator
-    geolocator = Nominatim(timeout=10, user_agent='Opencast map generator')
+data = []
+geolocator = Nominatim(timeout=10, user_agent='Opencast map generator')
 
 
 # load the file only ones
@@ -91,7 +88,6 @@ def compareCache(country, city, organization):
 
 
 def main():
-    set_globalGeolocator()
     load_datafile()
     with open("adopters.geojson", "w") as census:
         census.write(json.dumps(convertGeoJson(getUserInformation())))
