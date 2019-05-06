@@ -14,7 +14,6 @@ def set_globalGeolocator():
 
 # load the file only ones
 def load_datafile():
-
     global data
 
     try:
@@ -22,12 +21,7 @@ def load_datafile():
             data = data_file.read()
             data = json.loads(data)
     except Exception:
-        with open("cache.json", "w+") as data_file:
-            # Because of the empty file python converts data to a String, so
-            # in line 46 append is not working.
-            #  --> In Exception ,,data = []'' to prevent this problem.
-            print("FILE IS EMPTY")
-            data = []
+        data = []
 
 
 def getUserInformation():
