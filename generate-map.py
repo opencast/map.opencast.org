@@ -5,22 +5,19 @@ import json
 from geopy.geocoders import Nominatim
 
 
-# global geolocator for initializing only ones
-def set_globalGeolocator():
-
-    global geolocator
-    geolocator = Nominatim(timeout=10, user_agent='Opencast map generator')
+data = []
+geolocator = Nominatim(timeout=10, user_agent='Opencast map generator')
 
 
 # load the file only ones
 def load_datafile():
-
     global data
 
     try:
         with open("cache.json", "r") as data_file:
             data = data_file.read()
             data = json.loads(data)
+
     except FileNotFoundError:
         with open("cache.json", "w+") as data_file:
             # Because of the empty file python converts data to a String, so
@@ -91,7 +88,6 @@ def compareCache(country, city, organization):
 
 
 def main():
-    set_globalGeolocator()
     load_datafile()
     with open("adopters.geojson", "w") as census:
         census.write(json.dumps(convertGeoJson(getUserInformation())))
