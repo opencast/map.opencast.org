@@ -17,8 +17,14 @@ def load_datafile():
         with open("cache.json", "r") as data_file:
             data = data_file.read()
             data = json.loads(data)
-    except Exception:
-        data = []
+
+    except FileNotFoundError:
+        with open("cache.json", "w+") as data_file:
+            # Because of the empty file python converts data to a String, so
+            # in line 46 append is not working.
+            #  --> In Exception ,,data = []'' to prevent this problem.
+            print("FILE IS EMPTY")
+            data = []
 
 
 def getUserInformation():
