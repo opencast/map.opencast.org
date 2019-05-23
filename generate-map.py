@@ -2,8 +2,6 @@
 
 import sqlite3
 import json
-import itertools
-from operator import itemgetter
 from geopy.geocoders import Nominatim
 
 global geolocator
@@ -52,38 +50,17 @@ def getGeoCode(country, city, organization, dataList):
 
 def fixOverlappingEntries():
 
-    sorted_all = sorted(data, key=itemgetter('longitude'))
-    grouped_locations = []
+    locations = {}
 
-    # group all Organizations by long and latitude and save them in a list
-    for key, group in (
-                       itertools.groupby(sorted_all,
-                                         key=lambda each: (each['longitude'],
-                                                           each["latitude"]))
-    ):
-        grouped_locations.append(list(group))
-
-    pooledLoc = []
-    # create Location with multiple organizations
-    try:
-        for k in range(len(grouped_locations)):
-            pooledLocation = {"country": grouped_locations[k][0]["country"],
-                              "city": grouped_locations[k][0]["city"],
-                              "organization": "",
-                              "latitude": grouped_locations[k][0]["latitude"],
-                              "longitude": grouped_locations[k][0]["longitude"]
-                              }
-            for grp_location in grouped_locations[k]:
-                pooledLocation["organization"] += grp_location["organization"]
-                pooledLocation["organization"] += ", "
-                pooledLoc.append(pooledLocation)
-
-        for l in range(len(pooledLoc)):
-            pooledLoc[l]["organization"] = pooledLoc[l]["organization"][:-2]
-
-        return pooledLoc
-    except TypeError:
-        return None
+    for organization in data:
+        key = (organization['longitude'], organization['latitude'])
+        # check if we already encountered this location
+        if locations.get(key):
+            locations[key]['organization'] += ', ' \
+                + organization['organization']
+        else:
+            locations[key] = organization
+    return locations.values()
 
 
 def convertGeoJson(addresses):
