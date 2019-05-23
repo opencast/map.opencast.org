@@ -4,20 +4,19 @@ import sqlite3
 import json
 from geopy.geocoders import Nominatim
 
-
-data = []
+global geolocator
 geolocator = Nominatim(timeout=10, user_agent='Opencast map generator')
 
 
 # load the file only ones
 def load_datafile():
+
     global data
 
     try:
         with open("cache.json", "r") as data_file:
             data = data_file.read()
             data = json.loads(data)
-
     except FileNotFoundError and ValueError:
         data = []
 
@@ -45,7 +44,23 @@ def getGeoCode(country, city, organization, dataList):
         dataList.append(geoLocation)
         with open("cache.json", "w") as f:
             f.write(json.dumps(dataList))
+        print(geoLocation)
         return geoLocation
+
+
+def fixOverlappingEntries():
+
+    locations = {}
+
+    for organization in data:
+        key = (organization['longitude'], organization['latitude'])
+        # check if we already encountered this location
+        if locations.get(key):
+            locations[key]['organization'] += ', ' \
+                + organization['organization']
+        else:
+            locations[key] = organization
+    return locations.values()
 
 
 def convertGeoJson(addresses):
@@ -73,6 +88,7 @@ def compareCache(country, city, organization):
             if (city == item["city"] and country == item['country']
                     and organization == item['organization']):
                 print("USER LOADED FROM CACHE")
+                print(item)
                 return item
         else:
             print("NEW USER NOT IN CACHE")
@@ -84,8 +100,9 @@ def compareCache(country, city, organization):
 
 def main():
     load_datafile()
+    convertGeoJson(getUserInformation())
     with open("adopters.geojson", "w") as census:
-        census.write(json.dumps(convertGeoJson(getUserInformation())))
+        census.write(json.dumps(convertGeoJson(fixOverlappingEntries())))
 
 
 if __name__ == '__main__':
