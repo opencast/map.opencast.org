@@ -3,12 +3,12 @@ language: python
 sudo: false
 
 python:
-    - "3.4"
-    - "3.5"
-    - "3.6"
+   - "3.4"
+   - "3.5"
+   - "3.6"
 
 before_install:
-    - pip install flake8
+   - pip install flake8
 
 script:
-    - flake8 *.py
+   - flake8 *.py
