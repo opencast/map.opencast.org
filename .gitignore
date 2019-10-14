@@ -13,3 +13,4 @@ adopters.geojson
 cache.json
 user.db
 node_modules
+/dist
