@@ -19,8 +19,10 @@ window.onload = function () {
       minZoom: 2
     })
     .fitBounds(geojson.getBounds());
+    var markers = L.markerClusterGroup();
 
     basemap.addTo(map);
-    geojson.addTo(map);
+    geojson.addTo(markers);
+    markers.addTo(map);
     });
 };
