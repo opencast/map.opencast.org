@@ -18,7 +18,7 @@ def load_datafile():
             data = data_file.read()
             data = json.loads(data)
 
-    except FileNotFoundError and ValueError:
+    except FileNotFoundError or ValueError:
         data = []
 
 
@@ -77,7 +77,7 @@ def compareCache(country, city, organization):
         else:
             print("NEW USER NOT IN CACHE")
             return getGeoCode(country, city, organization, data)
-    except TypeError and FileNotFoundError:
+    except TypeError or FileNotFoundError:
         print("FAILED ERROR")
         return getGeoCode(country, city, organization, data)
 
