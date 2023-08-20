@@ -1,28 +1,29 @@
+function adopterData(feature, layer) {
+  let description = `<b>${feature.properties.institution}</b>`;
+  if (feature.properties.department) {
+    description += `<br />${feature.properties.department}`
+  }
+  layer.bindPopup(description);
+}
+
 window.onload = function () {
-    console.log("Script is running")
-    var basemap = L.tileLayer('https://a.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-		attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors',
-        noWrap: false
-	});
+  const basemap = L.tileLayer('https://a.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors',
+    noWrap: false
+  });
 
-    $.getJSON("adopters.geojson", function(data) {
-
-      function onEachFeature(feature, layer) {
-
-          layer.bindPopup("Institution: " + feature.properties.institution);
-      }
-      var geojson = L.geoJson(data, {
-        onEachFeature: onEachFeature
+  fetch('adopters.geojson')
+    .then(response => response.json())
+    .then(data => {
+      const geojson = L.geoJson(data, {
+        onEachFeature: adopterData
       });
 
-    var map = L.map('my-map',{
-      minZoom: 2
-    })
-    .fitBounds(geojson.getBounds());
-    var markers = L.markerClusterGroup();
+      const map = L
+        .map('map', {minZoom: 2})
+        .fitBounds(geojson.getBounds());
 
-    basemap.addTo(map);
-    geojson.addTo(markers);
-    markers.addTo(map);
+      basemap.addTo(map);
+      geojson.addTo(map);
     });
 };
