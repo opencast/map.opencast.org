@@ -10,6 +10,8 @@ _vscode
 
 # Ignore output
 adopters.geojson
-cache.json
-user.db
+app.db
 node_modules
+
+# Ignore virtual environment
+venv
